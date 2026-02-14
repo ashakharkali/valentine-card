@@ -11,7 +11,6 @@
       --bg1:#2b0f2f;
       --bg2:#0f0c29;
       --glass: rgba(255,255,255,0.06);
-      --glass2: rgba(255,255,255,0.10);
       --stroke: rgba(255,255,255,0.10);
       --text: rgba(255,255,255,0.92);
       --muted: rgba(255,255,255,0.70);
@@ -32,7 +31,7 @@
       overflow:hidden;
     }
 
-    /* floating hearts (subtle) */
+    /* subtle background glow */
     .hearts{
       position:fixed; inset:0;
       pointer-events:none;
@@ -53,6 +52,7 @@
       backdrop-filter: blur(16px);
       padding: 22px 22px 18px;
       position:relative;
+      z-index: 1;
     }
 
     .topbar{
@@ -70,6 +70,7 @@
       font-weight:700;
       letter-spacing:0.2px;
       color: var(--text);
+      white-space: nowrap;
     }
     .dot{
       width:10px; height:10px; border-radius:50%;
@@ -115,6 +116,7 @@
     @media (max-width: 860px){
       .layout{grid-template-columns: 1fr;}
       .progress{max-width: 220px;}
+      .brand{font-size: 14px;}
     }
 
     .card{
@@ -129,11 +131,6 @@
       font-size: 34px;
       line-height:1.1;
       letter-spacing:-0.3px;
-    }
-    h2{
-      margin: 2px 0 10px;
-      font-size: 26px;
-      letter-spacing:-0.2px;
     }
     p{
       margin: 10px 0;
@@ -170,7 +167,7 @@
       max-height: 400px;
       width:auto;
       height:auto;
-      object-fit: contain; /* ключевое — НЕ режет */
+      object-fit: contain;
       border-radius:14px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.35);
       transition: transform .35s ease, opacity .25s ease;
@@ -187,6 +184,7 @@
       justify-content:space-between;
       gap:10px;
       padding-top:14px;
+      flex-wrap:wrap;
     }
     .leftBtns{
       display:flex;
@@ -246,11 +244,109 @@
     @keyframes fall{
       to { transform: translateY(110vh) rotate(720deg); }
     }
+
+    /* intro overlay */
+    .intro{
+      position:fixed; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      background: radial-gradient(circle at top left, rgba(255,77,136,0.22), rgba(15,12,41,0.92));
+      backdrop-filter: blur(10px);
+      z-index: 10000;
+      transition: opacity .35s ease, transform .35s ease;
+    }
+    .intro.hide{
+      opacity:0;
+      transform: scale(1.02);
+      pointer-events:none;
+    }
+
+    .introCard{
+      width:min(520px, 86vw);
+      border-radius:22px;
+      padding:22px 18px 18px;
+      background: rgba(255,255,255,0.07);
+      border:1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+      text-align:center;
+    }
+
+    .seal{
+      width:64px; height:64px;
+      border-radius:18px;
+      display:grid; place-items:center;
+      margin: 0 auto 12px;
+      background: rgba(255,77,136,0.18);
+      border:1px solid rgba(255,77,136,0.30);
+      font-size: 28px;
+    }
+
+    .introTitle{
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+    }
+    .introText{
+      color: rgba(255,255,255,0.75);
+      font-size: 15.5px;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .introBtn{
+      padding: 10px 16px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight: 700;
+      border:1px solid rgba(255,77,136,0.45);
+      background: #ff4d88;
+      color:white;
+    }
+    .introBtn:hover{ background:#ff2e73; }
+    .introHint{
+      margin-top: 10px;
+      font-size: 12.5px;
+      color: rgba(255,255,255,0.55);
+    }
+
+    /* toast */
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 10px 14px;
+      border-radius: 14px;
+      color: rgba(255,255,255,0.92);
+      font-size: 13.5px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10001;
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .toast.show{
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
   </style>
 </head>
 
 <body>
   <div class="hearts"></div>
+
+  <!-- intro + toast -->
+  <div id="intro" class="intro">
+    <div class="introCard">
+      <div class="seal">💌</div>
+      <div class="introTitle">Айкүміс</div>
+      <div class="introText">Маленькая открытка. Один сюрприз.</div>
+      <button id="openBtn" class="introBtn">Открыть</button>
+      <div class="introHint">нажми — и начнём</div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Ссылка на подарок скоро появится 💝</div>
 
   <div class="container">
     <div class="topbar">
@@ -301,8 +397,9 @@
     let page = 0;
 
     const pages = [
-      `<span class="pill">Если ты читаешь это — значит, я уже скучаю. Скучаю <b style="color:#fff">сильно</b></span>
-       <h1>С Днём Святого Валентина 💘</h1>
+      `<span class="pill">Айкүміс 💘</span>
+       <h1>С Днём Святого Валентина</h1>
+       <p>Если ты читаешь это — значит, я уже скучаю. Скучаю сильно.</p>
        <p>Это маленькая онлайн-открытка.</p>
        <p>Листай дальше — там немного меня, немного нас и один сюрприз.</p>`,
 
@@ -311,10 +408,10 @@
 
       `<h1>Пять причин, почему я тебя обожаю</h1>
        <p>
-        1) Твоя красота.<br>
-        2) Твоя забота.<br>
-        3) Твой ум.<br>
-        4) Твоя поддержка.<br>
+        1) Твоя красота — та, что видно всем… и та, что только я знаю.<br>
+        2) Твоя забота — тихая, но бесконечная.<br>
+        3) Твой ум — светлый и глубокий.<br>
+        4) Твоя поддержка — даже на расстоянии ты рядом.<br>
         5) Ты. Просто ты. Моё солнышко.
        </p>`,
 
@@ -329,6 +426,7 @@
        <p>Готова открыть? 💌</p>`
     ];
 
+    // ✅ filenames exactly as in your repo (case-sensitive)
     const photos = ["1.JPG","2.JPG","3.JPG","4.jpg","5.jpg"];
 
     function update() {
@@ -347,8 +445,7 @@
       setTimeout(() => {
         img.src = photos[page];
         img.onload = () => img.classList.remove("fade");
-        // на случай кеша/моментальной загрузки
-        setTimeout(()=>img.classList.remove("fade"), 120);
+        setTimeout(()=>img.classList.remove("fade"), 160);
       }, 120);
     }
 
@@ -366,10 +463,18 @@
       }
     }
 
+    function showToast(msg){
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1800);
+    }
+
     function openGift() {
-      // Заглушка пока — потом заменим на реальную ссылку
       createConfetti();
-      alert("Ссылка на подарок скоро появится 💝");
+      showToast("Ссылка на подарок скоро появится 💝");
+      // потом заменим на реальную ссылку:
+      // window.open("https://amazon...ваша_ссылка", "_blank");
     }
 
     function toggleMusic() {
@@ -396,6 +501,20 @@
     window.addEventListener("keydown", (e) => {
       if (e.key === "ArrowRight") next();
       if (e.key === "ArrowLeft") prev();
+    });
+
+    // intro open -> also try autoplay music (allowed after click)
+    const intro = document.getElementById("intro");
+    document.getElementById("openBtn").addEventListener("click", async () => {
+      intro.classList.add("hide");
+      // optional: start music gently after user click
+      try{
+        const music = document.getElementById("bgMusic");
+        music.volume = 0.25;
+        await music.play();
+      }catch(e){
+        // ignore if blocked
+      }
     });
 
     update();
