@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>For you 💌</title>
+  <meta name="theme-color" content="#ff4d6d" />
+  <style>
+    :root{
+      --bg1:#0b0b14;
+      --bg2:#15162a;
+      --card:#0f1020cc;
+      --stroke:#ffffff22;
+      --text:#f6f3ff;
+      --muted:#c9c3ffcc;
+      --accent:#ff4d6d;
+      --accent2:#ffb3c1;
+      --shadow: 0 18px 60px #00000066;
+      --radius: 22px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      overflow-x:hidden;
+      background:
+        radial-gradient(1200px 800px at 20% 15%, #ff4d6d33 0%, transparent 60%),
+        radial-gradient(900px 700px at 80% 30%, #7c5cff2a 0%, transparent 65%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
+
+    /* floating hearts */
+    .hearts{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0}
+    .heart{
+      position:absolute; bottom:-50px;
+      width:16px; height:16px;
+      transform: rotate(45deg);
+      background: var(--accent);
+      opacity:.22;
+      filter: blur(.2px);
+      animation: floatUp linear infinite;
+    }
+    .heart:before,.heart:after{
+      content:""; position:absolute; width:16px; height:16px; border-radius:50%;
+      background:inherit;
+    }
+    .heart:before{left:-8px; top:0}
+    .heart:after{left:0; top:-8px}
+    @keyframes floatUp{
+      0%{ transform:translateY(0) rotate(45deg) scale(1); opacity:.0}
+      10%{opacity:.25}
+      100%{ transform:translateY(-120vh) rotate(45deg) scale(1.8); opacity:0}
+    }
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:26px 14px 90px;
+    }
+
+    .card{
+      width:min(920px, 96vw);
+      background: linear-gradient(180deg, #ffffff10, #ffffff06);
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+    }
+
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 18px;
+      border-bottom:1px solid var(--stroke);
+      gap:10px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:50%;
+      background: var(--accent);
+      box-shadow: 0 0 18px #ff4d6d88;
+    }
+    .hint{color:var(--muted); font-size:12.5px}
+    .progress{
+      flex:1;
+      height:10px;
+      background:#ffffff10;
+      border:1px solid #ffffff14;
+      border-radius:999px;
+      overflow:hidden;
+      max-width:340px;
+    }
+    .bar{height:100%; width:0%; background:linear-gradient(90deg,var(--accent),#ffa6b6); transition:width .35s ease}
+    .content{
+      padding:26px 18px 20px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:18px;
+    }
+    @media (max-width: 820px){
+      .content{grid-template-columns:1fr}
+      .side{order:-1}
+      .progress{max-width:220px}
+    }
+
+    .page{
+      display:none;
+      animation: fadeIn .35s ease both;
+    }
+    .page.active{display:block}
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(8px)}
+      to{opacity:1; transform:translateY(0)}
+    }
+
+    h1,h2{margin:0 0 10px}
+    h1{font-size:34px; line-height:1.1}
+    h2{font-size:22px}
+    p{margin:10px 0; color:var(--muted); font-size:16px; line-height:1.55}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background:#00000022;
+      color:var(--text);
+      font-size:13px;
+    }
+    .pill b{color:var(--accent2)}
+    .big{
+      font-size:18px;
+      color: #f0ecff;
+    }
+
+    .side{
+      background: #0000001e;
+      border:1px solid #ffffff14;
+      border-radius: 18px;
+      padding:16px;
+    }
+    .photo{
+      width:100%;
+      aspect-ratio: 4/3;
+      border-radius:16px;
+      border:1px dashed #ffffff2a;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:12px;
+      color:var(--muted);
+      background:
+        radial-gradient(600px 300px at 10% 10%, #ff4d6d22 0%, transparent 55%),
+        radial-gradient(500px 260px at 90% 20%, #7c5cff1e 0%, transparent 60%),
+        linear-gradient(180deg, #ffffff08, #ffffff04);
+    }
+    .photo img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      border-radius:16px;
+      display:none;
+    }
+    .small{font-size:12.5px; color:#c9c3ff99; margin-top:10px}
+
+    .list{
+      margin:12px 0 0;
+      padding:0;
+      list-style:none;
+      display:grid;
+      gap:10px;
+    }
+    .li{
+      padding:12px 12px;
+      border:1px solid #ffffff14;
+      border-radius:14px;
+      background:#00000020;
+      color:#efeaff;
+      display:flex; gap:10px; align-items:flex-start;
+    }
+    .badge{
+      flex:0 0 auto;
+      width:26px;height:26px;border-radius:10px;
+      display:grid; place-items:center;
+      background:#ff4d6d22;
+      border:1px solid #ff4d6d44;
+      color:#ffd6de;
+      font-weight:800;
+    }
+    .li div{color:var(--muted); font-size:14.5px; line-height:1.45}
+    .li div b{color:#fff}
+
+    .nav{
+      display:flex;
+      gap:10px;
+      padding:0 18px 18px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .btns{display:flex; gap:10px; align-items:center}
+    button, a.btn{
+      appearance:none;
+      border:1px solid #ffffff1f;
+      background:#00000028;
+      color:var(--text);
+      padding:10px 14px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:650;
+      letter-spacing:.2px;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease;
+      text-decoration:none;
+      display:inline-flex; align-items:center; gap:10px;
+    }
+    button:hover, a.btn:hover{background:#00000036; border-color:#ffffff2b}
+    button:active, a.btn:active{transform:translateY(1px)}
+    .primary{
+      background: linear-gradient(90deg, var(--accent), #ff8fa3);
+      border-color: transparent;
+      color:#13040a;
+      box-shadow: 0 14px 40px #ff4d6d33;
+    }
+    .primary:hover{filter:saturate(1.05) contrast(1.02)}
+    .ghost{opacity:.85}
+    .counter{font-size:12.5px; color:#c9c3ffbb}
+
+    .footerNote{
+      padding:12px 18px 18px;
+      border-top:1px solid var(--stroke);
+      color:#c9c3ff88;
+      font-size:12.5px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .spark{color:#ffd1da}
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      padding:2px 7px;
+      border:1px solid #ffffff24;
+      border-bottom-color:#ffffff10;
+      border-radius:8px;
+      background:#00000028;
+      color:#efeaff;
+      font-size:12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+
+  <div class="wrap">
+    <div class="card" role="application" aria-label="Valentine mini site">
+      <div class="topbar">
+        <div class="brand"><span class="dot"></span> For you 💌</div>
+        <div class="progress" aria-label="progress"><div class="bar" id="bar"></div></div>
+        <div class="hint">Открой с улыбкой 🙂</div>
+      </div>
+
+      <div class="content">
+        <div>
+          <!-- PAGE 1 -->
+          <section class="page active" data-title="Start">
+            <span class="pill">Если ты читаешь это — значит, я уже скучаю <b>сильно</b></span>
+            <h1 style="margin-top:12px;">С Днём Святого Валентина 💘</h1>
+            <p class="big">
+              Это маленькая онлайн-открытка. Не Canva. Не шаблон. Почти как мини-кино,
+              только без бюджета, зато с чувствами.
+            </p>
+            <p>
+              Листай дальше — там пару слов от меня, пару причин, и в конце один сюрприз 🎁
+            </p>
+          </section>
+
+          <!-- PAGE 2 -->
+          <section class="page" data-title="Us">
+            <h2>Про нас (коротко, но честно)</h2>
+            <p class="big">
+              Ты — тот человек, рядом с которым даже расстояние выглядит как “временная мера”.
+            </p>
+            <p>
+              (Вставь сюда 2–3 предложения от себя — без пафоса, но тепло.)
+            </p>
+            <p><b>Шаблон:</b> “Мне нравится в тебе … / Я ценю … / Я хочу …”</p>
+          </section>
+
+          <!-- PAGE 3 -->
+          <section class="page" data-title="5 reasons">
+            <h2>5 причин, почему я тебя обожаю</h2>
+            <ul class="list">
+              <li class="li"><span class="badge">1</span><div><b>Твоя энергия.</b> Даже когда у меня тяжёлый день — ты умеешь сделать легче.</div></li>
+              <li class="li"><span class="badge">2</span><div><b>Твоя забота.</b> Ты видишь детали, которые никто не замечает.</div></li>
+              <li class="li"><span class="badge">3</span><div><b>Твой ум.</b> С тобой интересно — не “поговорить”, а реально поговорить.</div></li>
+              <li class="li"><span class="badge">4</span><div><b>Твоя честность.</b> Ты настоящая — и это редкость.</div></li>
+              <li class="li"><span class="badge">5</span><div><b>Ты.</b> Просто ты. Без условий.</div></li>
+            </ul>
+            <p class="small">Если хочешь — заменишь эти 5 пунктов на ваши личные фишки.</p>
+          </section>
+
+          <!-- PAGE 4 -->
+          <section class="page" data-title="Note">
+            <h2>Маленькая записка</h2>
+            <p class="big">
+              Я рядом, даже когда мы не рядом.
+            </p>
+            <p>
+              Спасибо тебе за то, что ты есть. За твой характер, за твою теплоту и за то, что
+              ты умеешь быть “домом” — даже через экран.
+            </p>
+            <p class="big">
+              Люблю тебя. И да — я считаю, что это только начало 😉
+            </p>
+          </section>
+
+          <!-- PAGE 5 -->
+          <section class="page" data-title="Gift">
+            <h2>Финал 🎁</h2>
+            <p class="big">
+              А теперь — маленький сюрприз. Нажми кнопку ниже.
+            </p>
+            <p>
+              (Если Amazon у неё другой страны — лучше брать gift card именно для её Amazon: .com, .de, .co.uk и т.д.)
+            </p>
+            <a class="btn primary" id="giftBtn" href="AMAZON_GIFT_LINK_HERE" target="_blank" rel="noopener">
+              Открыть подарок → $100
+            </a>
+            <p class="small">Если хочешь “секретнее”: можно вместо ссылки показать код — скажешь, и я переделаю.</p>
+          </section>
+        </div>
+
+        <aside class="side">
+          <div class="photo" id="photoBox">
+            <div id="photoHint">
+              Тут можно поставить фото (или вашу картинку).
+              <br><br>
+              Вариант: загрузить картинку в репозиторий и указать путь в коде.
+              <br><br>
+              Я оставил инструкцию ниже.
+            </div>
+            <img id="photo" alt="our photo" />
+          </div>
+
+          <div class="small">
+            <div style="margin-top:12px">
+              <span class="pill">Управление: <span class="kbd">←</span> <span class="kbd">→</span> или кнопками</span>
+            </div>
+            <p style="margin-top:10px">
+              Хочешь добавить музыку? Можно подключить mp3 (тоже через репозиторий) и включать по кнопке.
+              Если надо — сделаю.
+            </p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="nav">
+        <div class="btns">
+          <button class="ghost" id="prevBtn" type="button">← Назад</button>
+          <button class="primary" id="nextBtn" type="button">Дальше →</button>
+        </div>
+        <div class="counter" id="counter">1 / 5</div>
+      </div>
+
+      <div class="footerNote">
+        <div>Сделано с <span class="spark">❤</span> и небольшим количеством “заморочек”.</div>
+        <div>Подсказка: можно открыть в браузере на телефоне тоже.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- hearts background ---
+    (function makeHearts(){
+      const root = document.getElementById('hearts');
+      const count = 18;
+      for(let i=0;i<count;i++){
+        const h = document.createElement('div');
+        h.className = 'heart';
+        const left = Math.random()*100;
+        const size = 10 + Math.random()*18;
+        const dur = 8 + Math.random()*10;
+        const delay = Math.random()*6;
+        h.style.left = left + 'vw';
+        h.style.width = h.style.height = size + 'px';
+        h.style.animationDuration = dur + 's';
+        h.style.animationDelay = delay + 's';
+        h.style.opacity = (0.12 + Math.random()*0.22).toFixed(2);
+        root.appendChild(h);
+      }
+    })();
+
+    // --- pages logic ---
+    const pages = Array.from(document.querySelectorAll('.page'));
+    const bar = document.getElementById('bar');
+    const counter = document.getElementById('counter');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let idx = 0;
+
+    function render(){
+      pages.forEach((p,i)=>p.classList.toggle('active', i===idx));
+      const total = pages.length;
+      counter.textContent = `${idx+1} / ${total}`;
+      bar.style.width = `${((idx+1)/total)*100}%`;
+      prevBtn.disabled = idx === 0;
+      nextBtn.textContent = (idx === total-1) ? 'С начала ↺' : 'Дальше →';
+      nextBtn.classList.toggle('primary', true);
+    }
+
+    function goNext(){
+      if(idx === pages.length-1){ idx = 0; }
+      else idx++;
+      render();
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    function goPrev(){
+      if(idx>0){ idx--; render(); window.scrollTo({top:0, behavior:'smooth'}); }
+    }
+
+    prevBtn.addEventListener('click', goPrev);
+    nextBtn.addEventListener('click', goNext);
+
+    window.addEventListener('keydown', (e)=>{
+      if(e.key === 'ArrowRight') goNext();
+      if(e.key === 'ArrowLeft') goPrev();
+    });
+
+    render();
+
+    // --- OPTIONAL: add your photo ---
+    // 1) положи файл в репозиторий, например: /assets/us.jpg
+    // 2) раскомментируй ниже и укажи путь
+    /*
+    const photo = document.getElementById('photo');
+    const hint = document.getElementById('photoHint');
+    photo.src = 'assets/us.jpg';
+    photo.onload = () => {
+      photo.style.display = 'block';
+      hint.style.display = 'none';
+    };
+    */
+  </script>
+</body>
+</html>
