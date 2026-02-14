@@ -1,199 +1,404 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For Айкүміс 💌</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For Айкүміс 💌</title>
+  <meta name="theme-color" content="#ff4d6d" />
 
-<style>
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at top left, #2b0f2f, #0f0c29);
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  overflow: hidden;
-}
+  <style>
+    :root{
+      --bg1:#2b0f2f;
+      --bg2:#0f0c29;
+      --glass: rgba(255,255,255,0.06);
+      --glass2: rgba(255,255,255,0.10);
+      --stroke: rgba(255,255,255,0.10);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.70);
+      --accent:#ff4d88;
+      --accent2:#ff2e73;
+    }
 
-.container {
-  width: 90%;
-  max-width: 900px;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(15px);
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 0 40px rgba(255,0,100,0.2);
-  position: relative;
-}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top left, var(--bg1), var(--bg2));
+      color: var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
 
-h1 { font-size: 36px; }
-p { font-size: 18px; line-height: 1.6; }
+    /* floating hearts (subtle) */
+    .hearts{
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:0.20;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(255,77,136,0.35) 0 8px, transparent 10px),
+        radial-gradient(circle at 80% 20%, rgba(255,77,136,0.25) 0 10px, transparent 12px),
+        radial-gradient(circle at 70% 75%, rgba(255,77,136,0.18) 0 12px, transparent 14px);
+      filter: blur(0.2px);
+    }
 
-.photo {
-  width: 100%;
-  height: 300px;
-  background-size: cover;
-  background-position: center;
-  border-radius: 15px;
-  margin-bottom: 20px;
-  transition: all 0.6s ease;
-}
+    .container{
+      width:min(980px, 92vw);
+      border-radius:22px;
+      background: var(--glass);
+      border:1px solid var(--stroke);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+      backdrop-filter: blur(16px);
+      padding: 22px 22px 18px;
+      position:relative;
+    }
 
-.buttons {
-  margin-top: 20px;
-}
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding: 6px 8px 14px;
+    }
 
-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 10px;
-  background: #ff4d88;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  margin-right: 10px;
-}
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      letter-spacing:0.2px;
+      color: var(--text);
+    }
+    .dot{
+      width:10px; height:10px; border-radius:50%;
+      background: var(--accent);
+      box-shadow: 0 0 18px rgba(255,77,136,0.7);
+    }
 
-button:hover {
-  background: #ff2e73;
-}
+    .hint{
+      font-size: 13px;
+      color: var(--muted);
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.03);
+      white-space:nowrap;
+    }
 
-#giftBtn {
-  display: none;
-}
+    .progress{
+      flex:1;
+      height:8px;
+      border-radius:999px;
+      background: rgba(255,255,255,0.08);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.06);
+      max-width: 360px;
+      margin: 0 10px;
+    }
+    .bar{
+      height:100%;
+      width:20%;
+      background: linear-gradient(90deg, var(--accent), rgba(255,77,136,0.35));
+      border-radius:999px;
+      transition: width .35s ease;
+    }
 
-.confetti {
-  position: fixed;
-  width: 10px;
-  height: 10px;
-  background: pink;
-  top: -10px;
-  animation: fall linear infinite;
-}
+    .layout{
+      display:grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap:18px;
+      align-items:start;
+    }
 
-@keyframes fall {
-  to {
-    transform: translateY(100vh) rotate(720deg);
-  }
-}
-</style>
+    @media (max-width: 860px){
+      .layout{grid-template-columns: 1fr;}
+      .progress{max-width: 220px;}
+    }
+
+    .card{
+      background: rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:18px;
+      padding:18px;
+    }
+
+    h1{
+      margin: 2px 0 10px;
+      font-size: 34px;
+      line-height:1.1;
+      letter-spacing:-0.3px;
+    }
+    h2{
+      margin: 2px 0 10px;
+      font-size: 26px;
+      letter-spacing:-0.2px;
+    }
+    p{
+      margin: 10px 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height:1.65;
+    }
+    .pill{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.03);
+      color: rgba(255,255,255,0.86);
+      font-size:13px;
+      margin-bottom: 10px;
+    }
+
+    /* ✅ PHOTO: no crop */
+    .photoWrap{
+      width:100%;
+      max-height: 420px;
+      border-radius:18px;
+      overflow:hidden;
+      background: rgba(0,0,0,0.18);
+      border:1px solid rgba(255,255,255,0.10);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px;
+    }
+    .photoWrap img{
+      max-width:100%;
+      max-height: 400px;
+      width:auto;
+      height:auto;
+      object-fit: contain; /* ключевое — НЕ режет */
+      border-radius:14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      transition: transform .35s ease, opacity .25s ease;
+      opacity: 1;
+    }
+    .photoWrap img.fade{
+      opacity: 0;
+      transform: scale(0.98);
+    }
+
+    .controls{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding-top:14px;
+    }
+    .leftBtns{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    button{
+      padding:10px 14px;
+      border:none;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:15px;
+      color:white;
+      background: rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.12);
+      transition: transform .06s ease, background .2s ease, border-color .2s ease;
+    }
+    button:hover{
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.18);
+    }
+    button:active{transform: scale(0.98);}
+
+    .primary{
+      background: var(--accent);
+      border-color: rgba(255,77,136,0.55);
+    }
+    .primary:hover{ background: var(--accent2); }
+
+    #giftBtn{display:none;}
+
+    .pageCounter{
+      color: rgba(255,255,255,0.55);
+      font-size: 13px;
+      user-select:none;
+      white-space:nowrap;
+    }
+
+    .smallNote{
+      color: rgba(255,255,255,0.52);
+      font-size: 12.5px;
+      margin-top: 10px;
+      text-align:center;
+    }
+
+    /* confetti */
+    .confetti{
+      position:fixed;
+      width:10px;
+      height:10px;
+      top:-12px;
+      left:0;
+      pointer-events:none;
+      animation: fall linear infinite;
+      z-index:9999;
+    }
+    @keyframes fall{
+      to { transform: translateY(110vh) rotate(720deg); }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="hearts"></div>
 
-<div class="container">
+  <div class="container">
+    <div class="topbar">
+      <div class="brand"><span class="dot"></span> For Айкүміс 💌</div>
 
-<div id="photo" class="photo"></div>
+      <div class="progress" aria-label="progress">
+        <div class="bar" id="bar"></div>
+      </div>
 
-<div id="content"></div>
+      <div class="hint">Открой с улыбкой 🙂</div>
+    </div>
 
-<div class="buttons">
-<button onclick="prev()">← Назад</button>
-<button onclick="next()">Дальше →</button>
-<button id="giftBtn" onclick="openGift()">Открыть подарок 🎁</button>
-<button onclick="toggleMusic()">Музыка 🎵</button>
-</div>
+    <div class="layout">
+      <div class="card">
+        <div id="content"></div>
+      </div>
 
-</div>
+      <div class="card">
+        <div class="photoWrap">
+          <img id="photoImg" src="1.JPG" alt="photo" />
+        </div>
 
-<audio id="bgMusic" src="music.mp3"></audio>
+        <p style="margin-top:12px;">
+          Управление: кнопками или стрелками клавиатуры ← →
+        </p>
+        <p style="margin-top:0;">
+          Музыку можно включить кнопкой 🎵
+        </p>
+      </div>
+    </div>
 
-<script>
-let page = 0;
+    <div class="controls">
+      <div class="leftBtns">
+        <button onclick="prev()">← Назад</button>
+        <button class="primary" onclick="next()">Дальше →</button>
+        <button id="giftBtn" class="primary" onclick="openGift()">Открыть подарок 🎁</button>
+        <button onclick="toggleMusic()">Музыка 🎵</button>
+      </div>
+      <div class="pageCounter" id="counter">1 / 5</div>
+    </div>
 
-const pages = [
+    <div class="smallNote">Сделано с ❤️ и небольшим количеством “заморочек”.</div>
+  </div>
 
-`<h1>For Айкүміс 💌</h1>
-<p>Если ты читаешь это — значит, я уже скучаю.<br>
-Скучаю сильно.</p>
-<p>С Днём Святого Валентина 💘</p>
-<p>Это маленькая онлайн-открытка.</p>
-<p>Листай дальше — там немного меня, немного нас и один сюрприз.</p>`,
+  <audio id="bgMusic" src="music.mp3" preload="auto"></audio>
 
-`<h1>Я тебя очень сильно люблю</h1>
-<p>Просто люблю.</p>`,
+  <script>
+    let page = 0;
 
-`<h1>Пять причин, почему я тебя обожаю</h1>
-<p>1. Твоя красота — та, что видно всем… и та, что только я знаю.<br>
-2. Твоя забота — тихая, но бесконечная.<br>
-3. Твой ум — светлый и глубокий.<br>
-4. Твоя поддержка — даже на расстоянии ты рядом.<br>
-5. Ты. Просто ты. Моё солнышко.</p>`,
+    const pages = [
+      `<span class="pill">Если ты читаешь это — значит, я уже скучаю. Скучаю <b style="color:#fff">сильно</b></span>
+       <h1>С Днём Святого Валентина 💘</h1>
+       <p>Это маленькая онлайн-открытка.</p>
+       <p>Листай дальше — там немного меня, немного нас и один сюрприз.</p>`,
 
-`<h1>Маленькая записка</h1>
-<p>Вот и настал этот день.</p>
-<p>Мы считаем дни до нашей встречи.<br>
-Я верю — это будет самый лучший день.</p>
-<p>Мы проведём прекрасные выходные в Вашингтоне,<br>
-отметим твоё и моё день рождения в Нэшвилле.</p>
-<p>Это только начало нашего пути.</p>
-<p>Но я знаю одно — нас ждёт что-то большое.<br>
-И я сделаю тебя самой счастливой.</p>`,
+      `<h1>Я тебя очень сильно люблю</h1>
+       <p>Просто люблю.</p>`,
 
-`<h1>У меня для тебя маленький сюрприз</h1>
-<p>Готова открыть? 💌</p>`
-];
+      `<h1>Пять причин, почему я тебя обожаю</h1>
+       <p>
+        1) Твоя красота.<br>
+        2) Твоя забота.<br>
+        3) Твой ум.<br>
+        4) Твоя поддержка.<br>
+        5) Ты. Просто ты. Моё солнышко.
+       </p>`,
 
-const photos = [
-"1.JPG",
-"2.JPG",
-"3.JPG",
-"4.jpg",
-"5.jpg"
-];
+      `<h1>Маленькая записка</h1>
+       <p>Вот и настал этот день.</p>
+       <p>Мы считаем дни до нашей встречи.<br>Я верю — это будет самый лучший день.</p>
+       <p>Мы проведём прекрасные выходные в Вашингтоне,<br>отметим твоё и моё день рождения в Нэшвилле.</p>
+       <p>Это только начало нашего пути.</p>
+       <p>Но я знаю одно — нас ждёт что-то большое.<br>И я сделаю тебя самой счастливой.</p>`,
 
-function update() {
-  document.getElementById("content").innerHTML = pages[page];
-  document.getElementById("photo").style.backgroundImage = "url('" + photos[page] + "')";
-  document.getElementById("giftBtn").style.display = page === 4 ? "inline-block" : "none";
-}
+      `<h1>У меня для тебя маленький сюрприз</h1>
+       <p>Готова открыть? 💌</p>`
+    ];
 
-function next() {
-  if (page < pages.length - 1) {
-    page++;
+    const photos = ["1.JPG","2.JPG","3.JPG","4.jpg","5.jpg"];
+
+    function update() {
+      document.getElementById("content").innerHTML = pages[page];
+
+      // progress + counter
+      document.getElementById("bar").style.width = ((page + 1) / pages.length * 100) + "%";
+      document.getElementById("counter").textContent = (page + 1) + " / " + pages.length;
+
+      // gift button on last page
+      document.getElementById("giftBtn").style.display = (page === pages.length - 1) ? "inline-block" : "none";
+
+      // photo swap with tiny fade
+      const img = document.getElementById("photoImg");
+      img.classList.add("fade");
+      setTimeout(() => {
+        img.src = photos[page];
+        img.onload = () => img.classList.remove("fade");
+        // на случай кеша/моментальной загрузки
+        setTimeout(()=>img.classList.remove("fade"), 120);
+      }, 120);
+    }
+
+    function next() {
+      if (page < pages.length - 1) {
+        page++;
+        update();
+      }
+    }
+
+    function prev() {
+      if (page > 0) {
+        page--;
+        update();
+      }
+    }
+
+    function openGift() {
+      // Заглушка пока — потом заменим на реальную ссылку
+      createConfetti();
+      alert("Ссылка на подарок скоро появится 💝");
+    }
+
+    function toggleMusic() {
+      const music = document.getElementById("bgMusic");
+      if (music.paused) music.play();
+      else music.pause();
+    }
+
+    function createConfetti() {
+      for (let i = 0; i < 120; i++) {
+        const conf = document.createElement("div");
+        conf.className = "confetti";
+        conf.style.left = (Math.random() * 100) + "vw";
+        conf.style.animationDuration = (2 + Math.random() * 3) + "s";
+        conf.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
+        conf.style.opacity = (0.7 + Math.random() * 0.3);
+        conf.style.transform = `rotate(${Math.random()*360}deg)`;
+        document.body.appendChild(conf);
+        setTimeout(() => conf.remove(), 5500);
+      }
+    }
+
+    // keyboard arrows
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
+    });
+
     update();
-  }
-}
-
-function prev() {
-  if (page > 0) {
-    page--;
-    update();
-  }
-}
-
-function openGift() {
-  // Заглушка пока
-  alert("Ссылка на подарок скоро появится 💝");
-  createConfetti();
-}
-
-function toggleMusic() {
-  const music = document.getElementById("bgMusic");
-  if (music.paused) {
-    music.play();
-  } else {
-    music.pause();
-  }
-}
-
-function createConfetti() {
-  for (let i = 0; i < 100; i++) {
-    const conf = document.createElement("div");
-    conf.classList.add("confetti");
-    conf.style.left = Math.random() * 100 + "vw";
-    conf.style.animationDuration = 2 + Math.random() * 3 + "s";
-    conf.style.background = `hsl(${Math.random()*360}, 100%, 70%)`;
-    document.body.appendChild(conf);
-    setTimeout(() => conf.remove(), 5000);
-  }
-}
-
-update();
-</script>
-
+  </script>
 </body>
 </html>
